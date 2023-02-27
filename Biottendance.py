@@ -2,9 +2,11 @@ import socket
 import threading
 import json
 import pandas as pd
+import os
+import Database as db
 
 HEADER = 64
-PORT = 5050
+PORT = 5059
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
@@ -12,33 +14,62 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
+AllStudents = db.Students("Data")
+sample = {}
 
-def register_student(name, card_id, print_id):
-    pass
 
-def student_sign_in(id_type, id):
-    pass
 
 def process_request(msg):
+    global sample
     msg = json.loads(msg)
-    print(msg["type"])
-    return json.dumps({"type":"test", "mode":"response", "message": "signed-in"})
+    print(msg["mode"], "reques made")
+    # add attendance request
+    if msg["mode"] == "add_atd":
+        if msg["card_id"] != None:
+            student = AllStudents.fetch_data(msg["card_id"], "card_id")
+            if type(student) is int:
+                 return json.dumps({"mode":"response", "message": "unregistred"})
+            r = db.addAttendance(student["name"])     
+        else:
+            student = AllStudents.fetch_data(msg["print_id"], "print_id")
+            if type(student) is int:
+                 return json.dumps({"mode":"response", "message": "unregistered"})
+            r = db.addAttendance(student["name"])   
+
+        return json.dumps({"mode":"response", "message": r[1]})
+
+    # add student request
+    elif msg["mode"] == "add_std":
+        #save id details and request student name
+        new_id = AllStudents.get_lenght()
+        student_name = input("Enter Student name: ")
+        sample = {"student_id":new_id, "name":student_name, "card_id":msg["card_id"],"print_id":msg["print_id"]}
+        r = AllStudents.update_data(sample)
+        return json.dumps({"mode":"response", "message": r[1]})
+
+    else:
+        return json.dumps({"mode":"response", "message": "Wrong Message"})
+
+        
 
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
 
     connected = True
     while connected:
-        msg_length = conn.recv(HEADER).decode(FORMAT)
-        if msg_length:
-            msg_length = int(msg_length)
-            msg = conn.recv(msg_length).decode(FORMAT)
-            if msg == DISCONNECT_MESSAGE:
-                connected = False
+        # msg_length = conn.recv(HEADER).decode(FORMAT)
+        # if msg_length:
+        #     msg_length = int(msg_length)
+        #     msg = conn.recv(msg_length).decode(FORMAT)
+        #     if msg == DISCONNECT_MESSAGE:
+        #         connected = False
 
-            print(f"[{addr}] {msg}")
-            response = process_request(msg)
-            conn.send(response.encode(FORMAT))
+        #     print(f"[{addr}] {msg}")
+        #     response = process_request(msg)
+        #     conn.send(response.encode(FORMAT))
+        msg = conn.recv(HEADER)
+        print("Recived this:", msg)
+        conn.send(b"seen your message")
 
     conn.close()
         

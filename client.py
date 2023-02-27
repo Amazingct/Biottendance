@@ -1,11 +1,13 @@
 import socket, json
-sample_msg = {"type":"single", "mode":"scan", "card_id":"123", "print_id":156}
+sample_msg2 = {"mode":"add_atd", "card_id":None, "print_id":7}
+sample_msg = {"mode":"add_std", "card_id":55, "print_id":40}
+sample_msg3 = {"mode": "std_name", "name":"Sayo Oye"}
 
 HEADER = 64
-PORT = 5050
+PORT = 5059
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
-SERVER = "192.168.56.1"
+SERVER = "192.168.1.145"
 ADDR = (SERVER, PORT)
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,11 +23,13 @@ def send(msg):
     return(client.recv(2048).decode(FORMAT))
 
 while True:
-    request = input("reques>> ")
+    request = input("request>> ")
     if request == "end":
         response = send(DISCONNECT_MESSAGE)
     elif request == "sample":
         response = send(json.dumps(sample_msg))
+    elif request == "sample2":
+        response = send(json.dumps(sample_msg3))
     else:
         response = send(request)
     print(response)
