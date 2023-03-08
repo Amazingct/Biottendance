@@ -22,7 +22,7 @@ sample = {}
 def process_request(msg):
     global sample
     msg = json.loads(msg)
-    print(msg["mode"], "reques made")
+    print(msg["mode"], "request made")
     # add attendance request
     if msg["mode"] == "add_atd":
         if msg["card_id"] != None:
@@ -46,6 +46,11 @@ def process_request(msg):
         sample = {"student_id":new_id, "name":student_name, "card_id":msg["card_id"],"print_id":msg["print_id"]}
         r = AllStudents.update_data(sample)
         return json.dumps({"mode":"response", "message": r[1]})
+    
+    elif msg["mode"]== "test":
+        return json.dumps({"mode":"response", "message": "Test Succesful"})
+
+
 
     else:
         return json.dumps({"mode":"response", "message": "Wrong Message"})
@@ -64,12 +69,17 @@ def handle_client(conn, addr):
         #     if msg == DISCONNECT_MESSAGE:
         #         connected = False
 
-        #     print(f"[{addr}] {msg}")
-        #     response = process_request(msg)
-        #     conn.send(response.encode(FORMAT))
         msg = conn.recv(HEADER)
-        print("Recived this:", msg)
-        conn.send(b"seen your message")
+        msg = str(msg)[2:-1]
+        print(f"[{addr}] {str(msg)}")
+        response = process_request(msg)
+
+
+        conn.send(response.encode("utf-8"))
+
+        #conn.send(response.encode(FORMAT))
+        
+        
 
     conn.close()
         
