@@ -5,7 +5,7 @@ import pandas as pd
 import os
 import Database as db
 
-HEADER = 64
+HEADER = 200
 PORT = 5059
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
@@ -25,7 +25,7 @@ def process_request(msg):
     print(msg["mode"], "request made")
     # add attendance request
     if msg["mode"] == "add_atd":
-        if msg["card_id"] != None:
+        if msg["card_id"] != "":
             student = AllStudents.fetch_data(msg["card_id"], "card_id")
             if type(student) is int:
                  return json.dumps({"mode":"response", "message": "unregistred"})
@@ -61,26 +61,23 @@ def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
 
     connected = True
-    while connected:
-        # msg_length = conn.recv(HEADER).decode(FORMAT)
-        # if msg_length:
-        #     msg_length = int(msg_length)
-        #     msg = conn.recv(msg_length).decode(FORMAT)
-        #     if msg == DISCONNECT_MESSAGE:
-        #         connected = False
+    # msg_length = conn.recv(HEADER).decode(FORMAT)
+    # if msg_length:
+    #     msg_length = int(msg_length)
+    #     msg = conn.recv(msg_length).decode(FORMAT)
+    #     if msg == DISCONNECT_MESSAGE:
+    #         connected = False
 
-        msg = conn.recv(HEADER)
-        msg = str(msg)[2:-1]
-        print(f"[{addr}] {str(msg)}")
-        response = process_request(msg)
+    msg = conn.recv(HEADER)
+    msg = str(msg)[2:-1]
+    print(f"[{addr}] {str(msg)}")
+    response = process_request(msg)
 
+    print(response)
+    conn.send(response.encode("utf-8"))
 
-        conn.send(response.encode("utf-8"))
-
-        #conn.send(response.encode(FORMAT))
+    #conn.send(response.encode(FORMAT))
         
-        
-
     conn.close()
         
 

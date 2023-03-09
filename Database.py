@@ -75,11 +75,11 @@ class Students:
                 self.save_data(previous_data)
             return 4,"Data exits-updated instead"
         
-        if new_row["card_id"] != None:
+        if new_row["card_id"] != "":
             if int(new_row["card_id"]) in list(previous_data["card_id"]):
                 return 3, "card already added"
             
-        if new_row["print_id"] != None:
+        if new_row["print_id"] != "":
             if int(new_row["print_id"]) in list(previous_data["print_id"]):
                 return 2, "print already added"
 

@@ -1,7 +1,7 @@
 import socket, json
 sample_msg2 = {"mode":"add_atd", "card_id":None, "print_id":7}
 sample_msg = {"mode":"add_std", "card_id":55, "print_id":40}
-sample_msg3 = {"mode": "std_name", "name":"Sayo Oye"}
+
 
 HEADER = 64
 PORT = 5059
