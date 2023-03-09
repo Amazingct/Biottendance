@@ -1,14 +1,11 @@
 #include <Adafruit_Fingerprint.h>
-#include <HardwareSerial.h>
- 
-Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial2);
+SoftwareSerial mySerial(12, 14);
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
  
 uint8_t id;
- 
 void setup()
 {
 Serial.begin(57600);
-Serial2.begin(115200);
 while (!Serial); // For Yun/Leo/Micro/Zero/...
 delay(100);
 Serial.println("\n\nAdafruit Fingerprint sensor enrollment");
