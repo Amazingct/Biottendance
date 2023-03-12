@@ -127,6 +127,7 @@ void loop()
   if (digitalRead(register_button) == 1)
   {
     int passed = 0;
+    delay(50);
     while(digitalRead(register_button) == 1)
     {
       passed += 1;

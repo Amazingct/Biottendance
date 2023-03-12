@@ -59,7 +59,9 @@ def process_request(msg):
     elif msg["mode"]== "test":
         return json.dumps({"mode":"response", "message": "Test Succesful"})
 
-
+    elif msg["mode"]== "clear_db":
+        #remembr to fill
+        return json.dumps({"mode":"response", "message": "Clear Successful"})
 
 
     else:

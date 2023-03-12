@@ -56,7 +56,7 @@ class Students:
     
     def get_lenght(self):
         data=self.load_data()
-        return len(data.index)
+        return len(data.index) + 1
 
     def update_data(self,data_dict):
         print("Data to Update:", data_dict)
