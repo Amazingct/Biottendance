@@ -3,15 +3,14 @@
 #include <SPI.h>
 #include <MFRC522.h>
 #include <Adafruit_Fingerprint.h>
+#include <ArduinoJson.h>
 
 
 //PRINT SENSOR
 #define MODEM_RX 16
 #define MODEM_TX 17
 #define mySerial Serial2 // use for ESP32
-
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
-
 uint8_t id;
 
 
@@ -29,12 +28,21 @@ WiFiClient client;
 const char* ssid = "sha-de";
 const char* password =  "shadeairtel123";
 const uint16_t port = 5059;
-const char * host = "192.168.1.145";
+const char * host = "192.168.56.1";
+
+//HANDLE JSON RESPONSE
+DynamicJsonDocument doc(1024);
+
+//PINS
+int register_button = 13;
+int attendance_button = 12;
 
 
 
 void setup()
 {
+  pinMode(register_button, INPUT_PULLDOWN);
+  pinMode(attendance_button, INPUT_PULLDOWN);
 
   //WIFI CONNECT
   Serial.begin(115200); 
@@ -73,21 +81,25 @@ void setup()
 
 //test code
 finger.emptyDatabase();
-String response =  enrol_print();
-Serial.println(response);
-delay(4000);
+
 
  
 }
  
 void loop()
 {
+
+  if (digitalRead(register_button) == 1){String response = add_std();}
+  if (digitalRead(register_button) == 1){String response =  add_atd();}
+  delay(50);
    
 
-  uint8_t id = getFingerprintIDez();
-  if (id==0){Serial.println("Error---Try Again");}
-  else{Serial.print("ID:"); Serial.println(id);}
-  delay(50);   
+  // uint8_t id = getFingerprintIDez();
+  // if (id==0){Serial.println("Error---Try Again");}
+  // else{Serial.print("ID:"); Serial.println(id);}
+  // delay(50);   
+
+  
 
 
 }
@@ -96,10 +108,7 @@ void loop()
 
 /// FUNCTIONS ///
 
-String enrol_print(){
-Serial.println("Ready to enroll a fingerprint!");
-Serial.println("Please type in the ID # (from 1 to 127) you want to save this finger as...");
-id = readnumber();
+String enrol_print(int id){
 if (id == 0) {// ID #0 not allowed, try again!
 return "ID NOT ALLOWED";
 }
@@ -113,20 +122,36 @@ while(code != 0)
   Serial.print("CODE:");
   Serial.println(code);
 }
- return "Enrolment Done!";
+ return "Print Enrolment Done!";
 }
 
 String add_std()
 {
+  Serial.print("Getting next available id .... :");
+  String response = send_to_server("get_id", "", "", "" );
+
+  deserializeJson(doc, response);
+  const char* mode = doc["mode"];
+  int available_id  = doc["message"];
+
+  if (available_id != 0)
+  {
+    Serial.println(available_id);
+    String response1 =  enrol_print(available_id);
+    Serial.println(response1);
+  }
+
   String card_uid = get_card_uid();
   Serial.println();
   Serial.print(F("Unique ID: "));
   Serial.println(card_uid);
   Serial.println();
-  String response = send_to_server("add_std", card_uid, "", "" );
-  return response;
-
+  String response2 = send_to_server("add_std", card_uid, "", "" );
+  
+  return response2;
 }
+
+
 
 String add_atd()
 {

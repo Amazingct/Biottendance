@@ -47,8 +47,18 @@ def process_request(msg):
         r = AllStudents.update_data(sample)
         return json.dumps({"mode":"response", "message": r[1]})
     
+    # get next availableprint id
+    elif msg["mode"]== "get_id":
+        next_id = 0
+        try:
+            next_id = new_id = AllStudents.get_lenght()
+        except:
+            pass
+        return json.dumps({"mode":"response", "message": next_id})
+    
     elif msg["mode"]== "test":
         return json.dumps({"mode":"response", "message": "Test Succesful"})
+
 
 
 
