@@ -127,7 +127,7 @@ void loop()
   if (digitalRead(register_button) == 1)
   {
     int passed = 0;
-    delay(50);
+    delay(200);
     while(digitalRead(register_button) == 1)
     {
       passed += 1;
@@ -237,6 +237,9 @@ String add_atd()
 
   show("HOLD DOWN", "BLUE TO USE CARD", "GREEN TO USE PRINT");
   while(digitalRead(register_button) == 0 && digitalRead(attendance_button) == 0)
+  {
+    
+  }
 
   if (digitalRead(register_button) == 1)
   {
