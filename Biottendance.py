@@ -60,7 +60,8 @@ def process_request(msg):
         return json.dumps({"mode":"response", "message": "Test Succesful"})
 
     elif msg["mode"]== "clear_db":
-        #remembr to fill
+        df = pd.DataFrame.from_dict(AllStudents.coulums)
+        df.to_excel(AllStudents.record_path, index=False)
         return json.dumps({"mode":"response", "message": "Clear Successful"})
 
 
