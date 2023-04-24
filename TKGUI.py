@@ -13,7 +13,7 @@ import Database as db
 HEADER = 200
 PORT = 5059
 SERVER = socket.gethostbyname(socket.gethostname())
-ADDR = (SERVER, PORT)
+ADDR = ('', PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 
@@ -201,7 +201,9 @@ class Application(tk.Frame):
             table.append(row_data)
 
         # Set table name label
-        self.table_name_label.config(text=sheet.title)
+        #get file name
+        file_name = file_path.split("/")[-1]
+        self.table_name_label.config(text=file_name)
 
         # Clear previous widgets in sheet canvas
         self.sheet_canvas.delete("all")
@@ -250,8 +252,6 @@ def input(prompt=""):
 
 
 def update_console(self):
-    d = input("Enter a number: ")
-    print("KK", d)
     start()
 
 

@@ -39,7 +39,7 @@ WiFiClient client;
 const char* ssid = "sha-de";
 const char* password =  "shadeairtel123";
 const uint16_t port = 5059;
-const char * host = "192.168.1.145";
+const char * host = "msiserver";
 
 //HANDLE JSON RESPONSE
 DynamicJsonDocument doc(1024);
@@ -305,8 +305,9 @@ String add_atd()
 
 String send_to_server(String mode, String card , String print, String name)
 {
-    WiFiClient client;
-    if (!client.connect(host, port)) 
+    IPAddress serverIP;
+    WiFi.hostByName(host, serverIP);
+    if (!client.connect(serverIP, port)) 
     {
         Serial.println("Connection to host failed");
         delay(1000);
