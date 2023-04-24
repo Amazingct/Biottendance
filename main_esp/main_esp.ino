@@ -127,7 +127,7 @@ void loop()
   if (digitalRead(register_button) == 1)
   {
     int passed = 0;
-    delay(50);
+    delay(200);
     while(digitalRead(register_button) == 1)
     {
       passed += 1;
@@ -157,7 +157,7 @@ void loop()
   if (digitalRead(attendance_button) == 1)
   {
    show("-------------", "SIGNING IN", "------------");
-    delay(4000);
+    delay(1500);
     String response =  add_atd();
     Serial.println(response);
     show("PRESS", "BLUE TO REGISTER", "GREEN TO SIGN-IN");
@@ -237,11 +237,14 @@ String add_atd()
 
   show("HOLD DOWN", "BLUE TO USE CARD", "GREEN TO USE PRINT");
   while(digitalRead(register_button) == 0 && digitalRead(attendance_button) == 0)
+  {
+    
+  }
 
   if (digitalRead(register_button) == 1)
   {
     show("-------------", "BY CARD", "------------");
-    delay(2000);
+    delay(1000);
     String card_uid = get_card_uid();
     if (card_uid !="failed")
     {
@@ -250,7 +253,7 @@ String add_atd()
       Serial.println(card_uid);
       Serial.println();
       show("STUDENT ID:"+card_uid, "ADDED TO" , "ATTENDANCE");
-      delay(4000);
+      delay(3000);
       String response = send_to_server("add_atd", card_uid, "", "" );
       deserializeJson(doc, response);
       const char* mode = doc["mode"];
@@ -271,12 +274,12 @@ String add_atd()
   if (digitalRead(attendance_button) == 1)
   {
     show("-------------", "BY PRINT", "------------");
-    delay(2000);
+    delay(1000);
     uint8_t print_id_placed =  getFingerprintIDez();
     if (print_id_placed !=0 )
     {
       show("STUDENT PRINT ID:"+print_id_placed, "ADDED TO" , "ATTENDANCE");
-      delay(4000);
+      delay(2000);
       String response = send_to_server("add_atd", "", String(print_id_placed), "" );
       deserializeJson(doc, response);
       const char* mode = doc["mode"];
