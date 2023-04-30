@@ -79,13 +79,7 @@ def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
 
     connected = True
-    # msg_length = conn.recv(HEADER).decode(FORMAT)
-    # if msg_length:
-    #     msg_length = int(msg_length)
-    #     msg = conn.recv(msg_length).decode(FORMAT)
-    #     if msg == DISCONNECT_MESSAGE:
-    #         connected = False
-
+   
     msg = conn.recv(HEADER)
     msg = str(msg)[2:-1]
     #print(f"[{addr}] {str(msg)}")
@@ -113,22 +107,22 @@ class Application(tk.Frame):
         super().__init__(master)
         self.master = master
         self.master.geometry("1800x500")  # Set window size
-        self.master.configure(bg="#ADD8E6")  # Set window background color
+        self.master.configure(bg="#1c2d4f")  # Set window background color
         self.pack(fill="both", expand=True)
 
         # Left side: console and text box
-        left_frame = tk.Frame(self, width=700, height=500, bg="#F5F5F5")
+        left_frame = tk.Frame(self, width=700, height=500, bg="#1c2d4f")
         left_frame.pack(side="left", fill="both", expand=True)
 
         # Console widget
-        console_label = tk.Label(left_frame, text="Console", bg="#F5F5F5", font=("Helvetica", 14, "bold"))
+        console_label = tk.Label(left_frame, text="Console", bg="#1c2d4f", fg="#FFFFFF", font=("Helvetica", 14, "bold"))
         console_label.pack(side="top", pady=10)
 
         # Scrollable console widget
         console_frame = tk.Frame(left_frame)
         console_frame.pack(side="top", padx=10, pady=10, fill="both", expand=True)
 
-        self.console = tk.Text(console_frame, height=20, width=150, wrap="none")
+        self.console = tk.Text(console_frame, height=20, width=150, wrap="none", bg="#242a3f", fg="#FFFFFF")
         self.console.pack(side="left", fill="both", expand=True)
 
         scrollbar = tk.Scrollbar(console_frame, orient="vertical", command=self.console.yview)
@@ -137,50 +131,49 @@ class Application(tk.Frame):
         self.console.config(yscrollcommand=scrollbar.set)
 
         # Input widget
-        input_frame = tk.Frame(left_frame, bg="#F5F5F5")
+        input_frame = tk.Frame(left_frame, bg="#1c2d4f")
         input_frame.pack(side="bottom", pady=10)
-        input_label = tk.Label(input_frame, text="Input:", bg="#F5F5F5")
+        input_label = tk.Label(input_frame, text="Input:", bg="#1c2d4f", fg="#FFFFFF")
         input_label.pack(side="left", padx=10)
         self.input_entry = tk.Entry(input_frame, width=40)
         self.input_entry.pack(side="left")
-        send_button = tk.Button(input_frame, text="Send", command=self.send)
+        send_button = tk.Button(input_frame, text="Send", command=self.send, bg="#3a4d7c", fg="#FFFFFF")
         send_button.pack(side="left", padx=10)
 
         # Right side: table
-        right_frame = tk.Frame(self, width=400, height=500, bg="#FFFFFF")
+        right_frame = tk.Frame(self, width=400, height=500, bg="#1c2d4f")
         right_frame.pack(side="right", fill="both", expand=True)
 
         # Sheet selection widget
-        sheet_label = tk.Label(right_frame, text="Select File:", bg="#FFFFFF", font=("Helvetica", 14, "bold"))
+        sheet_label = tk.Label(right_frame, text="Select File:", bg="#1c2d4f", fg="#FFFFFF", font=("Helvetica", 14, "bold"))
         sheet_label.pack(side="top", pady=10)
-        sheet_button = tk.Button(right_frame, text="Browse...", command=self.browse_file)
+        sheet_button = tk.Button(right_frame, text="Browse...", command=self.browse_file, bg="#3a4d7c", fg="#FFFFFF")
         sheet_button.pack(side="top", padx=10, pady=10)
 
+
+
         # Table name label
-        self.table_name_label = tk.Label(right_frame, text="", bg="#FFFFFF", font=("Helvetica", 14, "bold"))
+        self.table_name_label = tk.Label(right_frame, text="", bg="#1c2d4f", fg="#FFFFFF", font=("Helvetica", 14, "bold"))
         self.table_name_label.pack(side="top", pady=10)
 
         # Table widget
-        self.sheet_canvas = tk.Canvas(right_frame, width=380, height=460)
+        self.sheet_canvas = tk.Canvas(right_frame, width=380, height=460, bg="#1c2d4f", highlightthickness=0)
         self.sheet_canvas.pack(side="left", fill="both", expand=True)
 
-        # Graphic
-        graphic_frame = tk.Frame(left_frame, bg="#F5F5F5")
-        graphic_frame.pack(side="bottom", fill="both", expand=True)
-        graphic = tk.PhotoImage(file="images/ace.PNG")
-        graphic_label = tk.Label(graphic_frame, image=graphic)
-        graphic_label.image = graphic
-        graphic_label.pack()
+        # # Graphic
+        # graphic_frame = tk.Frame(left_frame, bg="#1c2d4f")
+        # graphic_frame.pack(side="bottom", fill="both", expand=True)
+        # graphic = tk.PhotoImage(file="images/ace.PNG")
+        # graphic_label = tk.Label(graphic_frame, image=graphic)
+        # graphic_label.image = graphic
+        # graphic_label.pack()
 
     def send(self):
         # Get input from user and clear input entry
         global input_text
         input_text = self.input_entry.get()
-        #self.input_entry.delete(0, tk.END)
-        # Display input in console
         self.console.insert(tk.END, f"> {input_text}\n")
         self.console.see(tk.END)
-
 
     def browse_file(self):
         # Open file dialog to select file
@@ -201,7 +194,6 @@ class Application(tk.Frame):
             table.append(row_data)
 
         # Set table name label
-        #get file name
         file_name = file_path.split("/")[-1]
         self.table_name_label.config(text=file_name)
 
@@ -211,21 +203,25 @@ class Application(tk.Frame):
         # Display table in sheet canvas using grid()
         for i, row in enumerate(table):
             for j, value in enumerate(row):
-                cell = tk.Label(self.sheet_canvas, text=value, borderwidth=1, relief="solid")
+                cell = tk.Label(self.sheet_canvas, text=value, borderwidth=1, relief="solid", bg="#3a4d7c", fg="#FFFFFF")
                 cell.grid(row=i, column=j, sticky="nsew")
 
         # Update sheet canvas
         self.sheet_canvas.update_idletasks()
         self.sheet_canvas.config(scrollregion=self.sheet_canvas.bbox("all"))
 
-      
+root = tk.Tk()
+
+root.configure(bg="#1c2d4f")  # Set window background color
+app = Application(master=root)
+
+# Add the rest of your code here
+# ...
+
+
     
 
 
-root = tk.Tk()
-
-root.configure(bg="#ADD8E6")  # Set window background color
-app = Application(master=root)
 
 
 

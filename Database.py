@@ -92,7 +92,7 @@ class Students:
             previous_data.loc[len(previous_data.index)] = to_be_added
             print(previous_data)
             self.save_data(previous_data)
-            return 1, "sucess"
+            return 1, "success"
         
     # def delete_student(self, id):
     #     data=self.load_data()
@@ -123,7 +123,7 @@ def addAttendance(name, location="Data", data_to_store= ["sn", "name", "time-in"
         writer = pd.ExcelWriter(record_path)
         previous_data.to_excel(writer, index=False)
         writer.save()
-        return 1, "sucess"
+        return 1, "success"
         
 
 
