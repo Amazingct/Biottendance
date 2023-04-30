@@ -35,6 +35,7 @@ def process_request(msg):
             student = AllStudents.fetch_data(msg["card_id"], "card_id")
             if type(student) is int:
                  return json.dumps({"mode":"response", "message": "unregistred"}),{"mode":"response", "message": "unregistred"}
+            print("SIGNING IN", student["name"], ".........")
             r = db.addAttendance(student["name"])     
         else:
             student = AllStudents.fetch_data(msg["print_id"], "print_id")

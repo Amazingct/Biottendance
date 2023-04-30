@@ -252,7 +252,7 @@ String add_atd()
       Serial.print(F("Unique ID: "));
       Serial.println(card_uid);
       Serial.println();
-      show("STUDENT ID:"+card_uid, "ADDED TO" , "ATTENDANCE");
+      show("STUDENT ID:"+card_uid, "ADDING TO" , "ATTENDANCE");
       delay(3000);
       String response = send_to_server("add_atd", card_uid, "", "" );
       deserializeJson(doc, response);
