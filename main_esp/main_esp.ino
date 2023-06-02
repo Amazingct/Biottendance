@@ -27,7 +27,7 @@ Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
 //RFID
 #define SS_PIN 21
-#define RST_PIN 2
+#define RST_PIN 22
 MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
 MFRC522::MIFARE_Key key; 
 // Init array that will store new NUID 
@@ -45,7 +45,7 @@ const char * host = "msiserver";
 DynamicJsonDocument doc(1024);
 
 //PINS
-int register_button = 13;
+int register_button = 27;
 int attendance_button = 12;
 
 
@@ -68,11 +68,11 @@ void show(String Line1, String Line2, String Line3)
 void setup()
 {
   //PINS
-  pinMode(register_button, INPUT_PULLDOWN);
-  pinMode(attendance_button, INPUT_PULLDOWN);
+  pinMode(register_button, INPUT_PULLUP);
+  pinMode(attendance_button, INPUT_PULLUP);
 
   //WIFI CONNECT
-  Serial.begin(115200); 
+  Serial.begin(9600); 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) 
   {
@@ -86,13 +86,12 @@ void setup()
   Serial.println();
 
   //OLED
-  Wire.begin(33,32);
+  Wire.begin(32,33);
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
   
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
-
 
 
   //RFID SETUP
@@ -124,11 +123,11 @@ void loop()
 {
   
   
-  if (digitalRead(register_button) == 1)
+  if (digitalRead(register_button) == 0)
   {
     int passed = 0;
     delay(200);
-    while(digitalRead(register_button) == 1)
+    while(digitalRead(register_button) == 0)
     {
       passed += 1;
       delay(1000);
@@ -154,8 +153,9 @@ void loop()
   }
 
 
-  if (digitalRead(attendance_button) == 1)
+  if (digitalRead(attendance_button) == 0)
   {
+    Serial.println("att button pressed");
    show("-------------", "SIGNING IN", "------------");
     delay(1500);
     String response =  add_atd();
@@ -236,12 +236,12 @@ String add_atd()
 {
 
   show("HOLD DOWN", "BLUE TO USE CARD", "GREEN TO USE PRINT");
-  while(digitalRead(register_button) == 0 && digitalRead(attendance_button) == 0)
+  while(digitalRead(register_button) == 1 && digitalRead(attendance_button) == 1)
   {
     
   }
 
-  if (digitalRead(register_button) == 1)
+  if (digitalRead(register_button) == 0)
   {
     show("-------------", "BY CARD", "------------");
     delay(1000);
@@ -271,7 +271,7 @@ String add_atd()
   }
 
 
-  if (digitalRead(attendance_button) == 1)
+  if (digitalRead(attendance_button) == 0)
   {
     show("-------------", "BY PRINT", "------------");
     delay(1000);
